@@ -20,4 +20,4 @@ Disallow: /checkout
 Disallow: /checkout/
 Disallow: /dashboard
 
-Sitemap: https://pharmacode07.onrender.com/sitemap.xml
+Sitemap: https://pharmacode07-9wva.onrender.com/sitemap.xml

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://pharmacode07.onrender.com';
+const SITE_URL = 'https://pharmacode07-9wva.onrender.com';
 const DEFAULT_TITLE = 'PharmaCode07 – Pharmacy Test Series, Model Papers & Notes';
 const DEFAULT_DESC =
   'Online Pharmacy Education & Competitive Exam Preparation platform. GSSSB Junior Pharmacist, UPSSSC, RRB, AIIMS, GPAT Mock Test Series, Model Papers, and High-Yield Study Materials.';

@@ -191,7 +191,7 @@ export const sendStudentQueryNotification = async (contactData) => {
       </div>
 
       <div style="background-color: #f1f5f9; padding: 14px 24px; text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0;">
-        This inquiry is also stored in your <a href="${process.env.CLIENT_URL || process.env.FRONTEND_URL || 'https://pharmacode07.onrender.com'}/admin" style="color: #2563eb; text-decoration: none; font-weight: bold;">Admin Studio Dashboard</a>.
+        This inquiry is also stored in your <a href="${process.env.CLIENT_URL || process.env.FRONTEND_URL || 'https://pharmacode07-9wva.onrender.com'}/admin" style="color: #2563eb; text-decoration: none; font-weight: bold;">Admin Studio Dashboard</a>.
       </div>
     </div>
   `;

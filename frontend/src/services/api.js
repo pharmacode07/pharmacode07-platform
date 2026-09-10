@@ -13,7 +13,7 @@ if (!rawBaseUrl) {
     rawBaseUrl = '/api';
   } else {
     // In production on Render (e.g. pharmacode07-arxj.onrender.com), connect directly to backend
-    rawBaseUrl = 'https://pharmacode07.onrender.com/api';
+    rawBaseUrl = 'https://pharmacode07-9wva.onrender.com/api';
   }
 }
 
