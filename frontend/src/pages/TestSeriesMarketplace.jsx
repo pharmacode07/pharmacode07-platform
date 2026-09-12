@@ -71,7 +71,7 @@ const TestSeriesMarketplace = () => {
     <div className="min-h-screen py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
       <SEO
         title="Pharmacist Test Series & Mock Papers"
-        description="Explore comprehensive pharmacist test series, CBT mock exams, and previous year papers for GSSSB, UPSSSC, RRB, AIIMS, and GPAT."
+        description="Explore comprehensive pharmacist test series, CBT mock exams, and previous year papers for RRB, ESIC, OSSSC, GSSSB, AIIMS, CISF, UPSSSC, and BFUHS Pharmacist."
         path="/test-series"
       />
       {/* Header Banner */}
@@ -85,7 +85,7 @@ const TestSeriesMarketplace = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onClear={() => setSearch('')}
-            placeholder="Search by exam name (e.g. GSSSB, UPSSSC)..."
+            placeholder="Search by exam name (e.g. RRB, ESIC, OSSSC, GSSSB)..."
           />
         </div>
       </HeroBanner>

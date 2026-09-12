@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet-async';
 const SITE_URL = 'https://pharmacode07-9wva.onrender.com';
 const DEFAULT_TITLE = 'PharmaCode07 – Pharmacy Test Series, Model Papers & Notes';
 const DEFAULT_DESC =
-  'Online Pharmacy Education & Competitive Exam Preparation platform. GSSSB Junior Pharmacist, UPSSSC, RRB, AIIMS, GPAT Mock Test Series, Model Papers, and High-Yield Study Materials.';
+  'Online Pharmacy Education & Competitive Exam Preparation platform. RRB, ESIC, OSSSC, GSSSB, AIIMS, CISF, UPSSSC, and BFUHS Pharmacist Mock Test Series, Model Papers, and High-Yield Study Materials.';
 const DEFAULT_KEYWORDS =
-  'Pharmacist Exam, GSSSB Junior Pharmacist, UPSSSC Pharmacist, RRB Pharmacist, AIIMS Pharmacist, GPAT Test Series, Pharmacy Model Papers, Pharmacy Study Notes, Pharma MCQs, PharmaCode07';
+  'Pharmacist Exam, RRB Pharmacist, ESIC Pharmacist, OSSSC Pharmacist, GSSSB Junior Pharmacist, AIIMS CRE Pharmacist, CISF ASI Pharmacist, UPSSSC Pharmacist, BFUHS Pharmacist, Pharmacy Model Papers, Pharmacy Study Notes, Pharma MCQs, PharmaCode07';
 
 /**
  * Reusable SEO component for head management
