@@ -37,7 +37,20 @@ export const validateCouponCode = async (code, orderAmount) => {
   return {
     code: coupon.code,
     discountPercent: coupon.discountPercent,
+    maxDiscount: coupon.maxDiscount,
+    minOrderValue: coupon.minOrderValue,
     discountAmount: discount,
     finalAmount,
   };
+};
+
+export const getPublicCoupons = async () => {
+  return await Coupon.find({
+    showOnSite: true,
+    isActive: true,
+    expiryDate: { $gt: new Date() },
+    $expr: { $lt: ['$usedCount', '$usageLimit'] },
+  })
+    .select('code discountPercent maxDiscount minOrderValue expiryDate displayLabel')
+    .sort({ discountPercent: -1 });
 };

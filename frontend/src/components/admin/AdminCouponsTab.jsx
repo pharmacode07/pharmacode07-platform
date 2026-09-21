@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Trash2 } from 'lucide-react';
+import { Search, Trash2, Eye, EyeOff } from 'lucide-react';
 import api from '../../services/api';
 
 const ITEMS_PER_PAGE = 8;
@@ -11,6 +11,8 @@ const AdminCouponsTab = ({ coupons, fetchAdminData, showToast }) => {
     maxDiscount: 100,
     minOrderValue: 99,
     expiryDays: 30,
+    showOnSite: false,
+    displayLabel: '',
   });
 
   const [couponSearch, setCouponSearch] = useState('');
@@ -28,11 +30,31 @@ const AdminCouponsTab = ({ coupons, fetchAdminData, showToast }) => {
       });
       if (res.data.success) {
         showToast('Promo Code created successfully!', 'success');
-        setNewCoupon({ code: '', discountPercent: 10, maxDiscount: 100, minOrderValue: 99, expiryDays: 30 });
+        setNewCoupon({
+          code: '',
+          discountPercent: 10,
+          maxDiscount: 100,
+          minOrderValue: 99,
+          expiryDays: 30,
+          showOnSite: false,
+          displayLabel: '',
+        });
         fetchAdminData();
       }
     } catch (err) {
       showToast('Failed to create coupon: ' + (err.response?.data?.message || err.message), 'error');
+    }
+  };
+
+  const handleToggleVisibility = async id => {
+    try {
+      const res = await api.patch(`/admin/coupons/${id}/toggle-visibility`);
+      if (res.data.success) {
+        showToast(res.data.message || 'Visibility updated', 'success');
+        fetchAdminData();
+      }
+    } catch (err) {
+      showToast('Failed to update visibility: ' + (err.response?.data?.message || err.message), 'error');
     }
   };
 
@@ -118,6 +140,30 @@ const AdminCouponsTab = ({ coupons, fetchAdminData, showToast }) => {
             </div>
           </div>
 
+          <div>
+            <label className="font-bold text-slate-700">Display Tagline (Optional)</label>
+            <input
+              type="text"
+              value={newCoupon.displayLabel}
+              onChange={e => setNewCoupon({ ...newCoupon, displayLabel: e.target.value })}
+              placeholder="e.g. Mega Deal: 20% OFF"
+              className="w-full mt-1 p-2.5 border rounded-xl text-xs sm:text-sm"
+            />
+          </div>
+
+          <label className="flex items-center space-x-2 pt-1 cursor-pointer">
+            <input
+              type="checkbox"
+              id="showOnSite"
+              checked={newCoupon.showOnSite}
+              onChange={e => setNewCoupon({ ...newCoupon, showOnSite: e.target.checked })}
+              className="w-4 h-4 text-indigo-600 rounded cursor-pointer"
+            />
+            <span className="text-xs font-bold text-slate-700 select-none">
+              Show in 'Available Offers' on Checkout
+            </span>
+          </label>
+
           <button
             type="submit"
             className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition cursor-pointer"
@@ -127,7 +173,7 @@ const AdminCouponsTab = ({ coupons, fetchAdminData, showToast }) => {
         </form>
       </div>
 
-      {/* Active Coupons List with Delete */}
+      {/* Active Coupons List with Delete & Visibility Toggle */}
       <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <h3 className="font-extrabold text-slate-900 text-base">Active Promo Codes ({filteredCoupons.length})</h3>
@@ -152,21 +198,51 @@ const AdminCouponsTab = ({ coupons, fetchAdminData, showToast }) => {
               key={c._id}
               className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-2"
             >
-              <div>
-                <span className="font-extrabold text-indigo-700 text-base block">{c.code}</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-extrabold text-indigo-700 text-base tracking-wide">{c.code}</span>
+                  {c.showOnSite ? (
+                    <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">
+                      Visible on Site
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-medium bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md">
+                      Hidden
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-slate-600 font-semibold mt-0.5">
                   {c.discountPercent}% OFF (Max ₹{c.maxDiscount})
                 </p>
-                <span className="text-[10px] text-slate-400">Min Order: ₹{c.minOrderValue || 0}</span>
+                {c.displayLabel && (
+                  <p className="text-[11px] text-indigo-600 font-medium truncate">{c.displayLabel}</p>
+                )}
+                <span className="text-[10px] text-slate-400 block">Min Order: ₹{c.minOrderValue || 0}</span>
               </div>
 
-              <button
-                onClick={() => handleDeleteCoupon(c._id)}
-                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition cursor-pointer"
-                title="Delete Coupon"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center space-x-1 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleToggleVisibility(c._id)}
+                  className={`p-2 rounded-xl transition cursor-pointer ${
+                    c.showOnSite
+                      ? 'text-emerald-600 hover:bg-emerald-50'
+                      : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'
+                  }`}
+                  title={c.showOnSite ? 'Hide from public offers' : 'Show in public offers on Checkout'}
+                >
+                  {c.showOnSite ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleDeleteCoupon(c._id)}
+                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition cursor-pointer"
+                  title="Delete Coupon"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))}
           {filteredCoupons.length === 0 && (

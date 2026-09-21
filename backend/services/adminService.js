@@ -323,7 +323,7 @@ export const getCoupons = async () => {
   return await Coupon.find().sort({ createdAt: -1 });
 };
 
-export const createCoupon = async ({ code, discountPercent, maxDiscount, minOrderValue, expiryDays, expiryDate }) => {
+export const createCoupon = async ({ code, discountPercent, maxDiscount, minOrderValue, expiryDays, expiryDate, showOnSite, displayLabel }) => {
   if (!code || !discountPercent) {
     throw new AppError('Please provide coupon code and discount percentage', 400);
   }
@@ -338,7 +338,17 @@ export const createCoupon = async ({ code, discountPercent, maxDiscount, minOrde
     maxDiscount: Number(maxDiscount) || 500,
     minOrderValue: Number(minOrderValue) || 0,
     expiryDate: finalExpiry,
+    showOnSite: Boolean(showOnSite),
+    displayLabel: displayLabel ? String(displayLabel).trim() : '',
   });
+};
+
+export const toggleCouponVisibility = async (id) => {
+  const coupon = await Coupon.findById(id);
+  if (!coupon) throw new AppError('Coupon not found', 404);
+  coupon.showOnSite = !coupon.showOnSite;
+  await coupon.save();
+  return coupon;
 };
 
 export const deleteCoupon = async (id) => {

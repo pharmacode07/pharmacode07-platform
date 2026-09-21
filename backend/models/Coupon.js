@@ -39,6 +39,15 @@ const couponSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    showOnSite: {
+      type: Boolean,
+      default: false,
+    },
+    displayLabel: {
+      type: String,
+      default: '',
+      trim: true,
+    },
   },
   {
     timestamps: true,

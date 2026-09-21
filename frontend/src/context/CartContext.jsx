@@ -123,15 +123,25 @@ export const CartProvider = ({ children }) => {
 
   const recalculateDiscount = (couponData, currentItems) => {
     if (!couponData) return;
+    if (!currentItems || currentItems.length === 0) {
+      setCoupon(null);
+      setDiscountAmount(0);
+      return;
+    }
     const currentSubtotal = currentItems.reduce((acc, curr) => acc + curr.price, 0);
+    if (couponData.minOrderValue && currentSubtotal < Number(couponData.minOrderValue)) {
+      setCoupon(null);
+      setDiscountAmount(0);
+      return;
+    }
     let disc = 0;
     if (couponData.discountPercent) {
-      disc = (currentSubtotal * couponData.discountPercent) / 100;
+      disc = (currentSubtotal * Number(couponData.discountPercent)) / 100;
     } else if (couponData.discountAmount) {
-      disc = couponData.discountAmount;
+      disc = Number(couponData.discountAmount);
     }
-    if (couponData.maxDiscount && disc > couponData.maxDiscount) {
-      disc = couponData.maxDiscount;
+    if (couponData.maxDiscount && disc > Number(couponData.maxDiscount)) {
+      disc = Number(couponData.maxDiscount);
     }
     setDiscountAmount(Math.min(currentSubtotal, Math.round(disc)));
   };

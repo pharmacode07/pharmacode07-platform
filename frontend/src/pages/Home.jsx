@@ -92,7 +92,7 @@ const Home = () => {
   const faqs = [
     {
       q: 'How do I purchase the GSSSB Junior Pharmacist 120 MCQ Model Papers?',
-      a: 'Click on the "Buy Now" button on the test series card. You can apply discount coupons like PHARMA10 at checkout and pay instantly via UPI, Cards, or NetBanking. The test papers unlock automatically in your Student Dashboard.',
+      a: 'Click on the "Buy Now" button on the test series card. You can apply available promo or discount coupons at checkout and pay instantly via UPI, Cards, or NetBanking. The test papers unlock automatically in your Student Dashboard.',
     },
     {
       q: 'Are the test papers based on the latest 2026 syllabus?',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -7,6 +7,7 @@ import {
   CreditCard,
   AlertCircle,
   Tag,
+  Sparkles,
   X,
 } from 'lucide-react';
 import api from '../services/api';
@@ -48,6 +49,25 @@ const Checkout = () => {
   const [couponMsg, setCouponMsg] = useState({ text: '', isError: false });
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [publicOffers, setPublicOffers] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchPublicCoupons = async () => {
+      try {
+        const res = await api.get('/coupons/public');
+        if (isMounted && res.data?.success && Array.isArray(res.data.data)) {
+          setPublicOffers(res.data.data);
+        }
+      } catch (err) {
+        // Silently fail if public coupons cannot be loaded
+      }
+    };
+    fetchPublicCoupons();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (items.length === 0) {
     return (
@@ -65,6 +85,17 @@ const Checkout = () => {
     if (!inputCoupon.trim()) return;
     setCouponMsg({ text: '', isError: false });
     const res = await applyCoupon(inputCoupon.trim());
+    if (res.success) {
+      setCouponMsg({ text: res.message, isError: false });
+      setInputCoupon('');
+    } else {
+      setCouponMsg({ text: res.message, isError: true });
+    }
+  };
+
+  const handleQuickApplyCoupon = async code => {
+    setCouponMsg({ text: '', isError: false });
+    const res = await applyCoupon(code);
     if (res.success) {
       setCouponMsg({ text: res.message, isError: false });
       setInputCoupon('');
@@ -361,6 +392,50 @@ const Checkout = () => {
                 >
                   {couponMsg.text}
                 </p>
+              )}
+
+              {/* AVAILABLE OFFERS LIST */}
+              {publicOffers.length > 0 && !coupon && (
+                <div className="pt-2 border-t border-slate-200/80 space-y-2">
+                  <div className="flex items-center space-x-1.5 text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Available Offers</span>
+                  </div>
+                  <div className="space-y-1.5 max-h-44 overflow-y-auto pr-0.5">
+                    {publicOffers.map(offer => (
+                      <div
+                        key={offer.code}
+                        className="p-2.5 bg-white border border-dashed border-indigo-200 rounded-xl flex items-center justify-between gap-2 hover:border-indigo-400 transition"
+                      >
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-extrabold text-indigo-700 text-xs tracking-wider bg-indigo-50 px-1.5 py-0.5 rounded">
+                              {offer.code}
+                            </span>
+                            <span className="text-[11px] font-bold text-slate-800">
+                              {offer.discountPercent}% OFF
+                            </span>
+                          </div>
+                          {offer.displayLabel ? (
+                            <p className="text-[10px] text-slate-500 mt-0.5 font-medium truncate">{offer.displayLabel}</p>
+                          ) : (
+                            <p className="text-[10px] text-slate-400 mt-0.5">
+                              {offer.maxDiscount ? `Max discount ₹${offer.maxDiscount}` : ''}
+                              {offer.minOrderValue ? ` • Min order ₹${offer.minOrderValue}` : ''}
+                            </p>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickApplyCoupon(offer.code)}
+                          className="px-2.5 py-1 text-xs font-extrabold text-indigo-600 hover:text-white hover:bg-indigo-600 border border-indigo-600 rounded-lg transition cursor-pointer flex-shrink-0"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
 

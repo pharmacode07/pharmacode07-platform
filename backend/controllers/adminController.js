@@ -137,6 +137,19 @@ export const createCoupon = async (req, res, next) => {
   }
 };
 
+export const toggleCouponVisibility = async (req, res, next) => {
+  try {
+    const coupon = await adminService.toggleCouponVisibility(req.params.id);
+    res.json({
+      success: true,
+      message: `Coupon is now ${coupon.showOnSite ? 'visible on site' : 'hidden from site'}`,
+      data: coupon,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteCoupon = async (req, res, next) => {
   try {
     await adminService.deleteCoupon(req.params.id);

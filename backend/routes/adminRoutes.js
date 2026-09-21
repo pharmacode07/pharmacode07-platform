@@ -14,6 +14,7 @@ import {
   deleteMaterial,
   getCoupons,
   createCoupon,
+  toggleCouponVisibility,
   deleteCoupon,
   getAllOrders,
   getAllStudents,
@@ -97,6 +98,8 @@ router.delete('/study-pack-items/:id', adminDeleteItem);
 // Coupons CRUD
 router.get('/coupons', getCoupons);
 router.post('/coupons', createCoupon);
+router.patch('/coupons/:id/toggle-visibility', toggleCouponVisibility);
+router.put('/coupons/:id/toggle-visibility', toggleCouponVisibility);
 router.delete('/coupons/:id', deleteCoupon);
 
 // Orders & Students

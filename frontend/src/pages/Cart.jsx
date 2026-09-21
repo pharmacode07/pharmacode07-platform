@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Trash2,
-  Tag,
   ArrowRight,
   ShoppingCart,
 } from 'lucide-react';
@@ -18,31 +17,9 @@ const Cart = () => {
     discountAmount,
     total,
     coupon,
-    applyCoupon,
-    removeCoupon,
   } = useCart();
   const { showToast } = useToast();
-
-  const [couponCode, setCouponCode] = useState('');
-  const [couponMsg, setCouponMsg] = useState('');
-  const [couponError, setCouponError] = useState('');
   const navigate = useNavigate();
-
-  const handleApplyCoupon = async e => {
-    e.preventDefault();
-    if (!couponCode) return;
-    setCouponMsg('');
-    setCouponError('');
-
-    const res = await applyCoupon(couponCode);
-    if (res.success) {
-      setCouponMsg(res.message);
-      showToast(res.message, 'success');
-    } else {
-      setCouponError(res.message);
-      showToast(res.message, 'error');
-    }
-  };
 
   const handleRemoveItem = (id) => {
     removeFromCart(id);
@@ -52,11 +29,6 @@ const Cart = () => {
   const handleClearCart = () => {
     clearCart();
     showToast('Cart cleared', 'info');
-  };
-
-  const handleRemoveCoupon = () => {
-    removeCoupon();
-    showToast('Coupon removed', 'info');
   };
 
   if (items.length === 0) {
@@ -149,58 +121,8 @@ const Cart = () => {
           </div>
         </div>
 
-        {/* Right Summary & Coupon (5 cols) */}
+        {/* Right Summary (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          {/* Coupon Box */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
-            <h4 className="font-bold text-slate-900 text-sm flex items-center space-x-1.5">
-              <Tag className="w-4 h-4 text-blue-600" />
-              <span>Apply Discount Coupon</span>
-            </h4>
-
-            {coupon ? (
-              <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between">
-                <div>
-                  <div className="font-bold text-emerald-800 text-sm">
-                    {coupon.code} applied!
-                  </div>
-                  <div className="text-xs text-emerald-600">
-                    You saved ₹{discountAmount} ({coupon.discountPercent}% OFF)
-                  </div>
-                </div>
-                <button
-                  onClick={handleRemoveCoupon}
-                  className="text-xs font-bold text-rose-600 hover:underline"
-                >
-                  Remove
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleApplyCoupon} className="flex gap-2">
-                <input
-                  type="text"
-                  value={couponCode}
-                  onChange={e => setCouponCode(e.target.value.toUpperCase())}
-                  placeholder="e.g. PHARMA10"
-                  className="flex-grow px-3 py-2 border border-slate-300 rounded-xl text-sm font-semibold uppercase focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition"
-                >
-                  Apply
-                </button>
-              </form>
-            )}
-
-            {couponMsg && <p className="text-xs font-bold text-emerald-600">{couponMsg}</p>}
-            {couponError && <p className="text-xs font-bold text-rose-600">{couponError}</p>}
-
-            <div className="text-[11px] text-slate-500 pt-1">
-              Tip: Try promo code <strong className="text-blue-600">PHARMA10</strong> for 10% instant discount.
-            </div>
-          </div>
-
           {/* Order Summary Box */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
             <h3 className="font-bold text-slate-900 text-base pb-3 border-b border-slate-100">
@@ -214,7 +136,7 @@ const Cart = () => {
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-600 font-semibold">
-                  <span>Coupon Discount</span>
+                  <span>Coupon Discount {coupon?.code ? `(${coupon.code})` : ''}</span>
                   <span>-₹{discountAmount}</span>
                 </div>
               )}
@@ -224,9 +146,13 @@ const Cart = () => {
               </div>
             </div>
 
+            <p className="text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">
+              💡 Have a coupon or promo code? You can apply it on the checkout page.
+            </p>
+
             <button
               onClick={() => navigate('/checkout')}
-              className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold rounded-xl shadow-lg transition transform hover:-translate-y-0.5 text-sm flex items-center justify-center space-x-2"
+              className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold rounded-xl shadow-lg transition transform hover:-translate-y-0.5 text-sm flex items-center justify-center space-x-2 cursor-pointer"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-4 h-4" />
